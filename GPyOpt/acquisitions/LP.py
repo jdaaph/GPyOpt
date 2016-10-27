@@ -116,7 +116,7 @@ class AcquisitionLP(AcquisitionBase):
         fval = -fval
         if X_batch!=None:
             h_vals = self._hammer_function(x, X_batch, r_x0, s_x0)
-            fval += h_vals.sum(axis=-1)
+            fval += -h_vals.sum(axis=-1)
         return fval
 
     def _d_hammer_function(self, x, X_batch, r_x0, s_x0):

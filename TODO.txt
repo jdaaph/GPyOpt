@@ -1,0 +1,3 @@
+Unit Test:
+1. Acquisition Binary T
+2. LP adaptation for Binary T

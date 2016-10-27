@@ -3,6 +3,7 @@
 
 from .base import AcquisitionBase
 from ..util.general import get_quantiles
+import numpy as np
 
 class AcquisitionBinaryT(AcquisitionBase):
     """
@@ -24,7 +25,7 @@ class AcquisitionBinaryT(AcquisitionBase):
         self.optimizer = optimizer
         super(AcquisitionBinaryT, self).__init__(model, space, optimizer, cost_withGradients=cost_withGradients)
         self.jitter = jitter
-        
+
     @staticmethod
     def fromConfig(model, space, optimizer, cost_withGradients, config):
         return AcquisitionBinaryT(model, space, optimizer, cost_withGradients, jitter=config['jitter'])
@@ -35,16 +36,16 @@ class AcquisitionBinaryT(AcquisitionBase):
     #     """
     #     m, s = self.model.predict(x)
     #     fmin = self.model.get_fmin()
-    #     phi, Phi, _ = get_quantiles(self.jitter, fmin, m, s)    
+    #     phi, Phi, _ = get_quantiles(self.jitter, fmin, m, s)
     #     f_acqu = (fmin - m + self.jitter) * Phi + s * phi
     #     return f_acqu
 
     def _compute_acq(self, x):
         """
-        Computes the Expected Improvement per unit of cost, always negative for this acq.
+        Computes the Expected Improvement per unit of cost, always negative for this acq. What to find the max
         """
         m, s = self.model.predict(x)
-        f_acqu = - m / s
+        f_acqu = - np.abs(m / s)
         return f_acqu
 
     # def _compute_acq_withGradients(self, x):
@@ -53,8 +54,8 @@ class AcquisitionBinaryT(AcquisitionBase):
     #     """
     #     fmin = self.model.get_fmin()
     #     m, s, dmdx, dsdx = self.model.predict_withGradients(x)
-    #     phi, Phi, _ = get_quantiles(self.jitter, fmin, m, s)    
-    #     f_acqu = (fmin - m + self.jitter) * Phi + s * phi        
+    #     phi, Phi, _ = get_quantiles(self.jitter, fmin, m, s)
+    #     f_acqu = (fmin - m + self.jitter) * Phi + s * phi
     #     df_acqu = dsdx * phi - Phi * dmdx
     #     return f_acqu, df_acqu
 
@@ -65,6 +66,5 @@ class AcquisitionBinaryT(AcquisitionBase):
         fmin = self.model.get_fmin()
         m, s, dmdx, dsdx = self.model.predict_withGradients(x)
         f_acqu = - m / s
-        df_acqu = - dmdx / s + m * dsdx / s / s 
+        df_acqu = - dmdx / s + m * dsdx / s / s
         return f_acqu, df_acqu
-

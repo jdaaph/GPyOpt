@@ -59,12 +59,6 @@ class AcquisitionLP(AcquisitionBase):
         s_x0 = s/L
         r_x0 = r_x0.flatten()
         s_x0 = s_x0.flatten()
-
-        print(m)
-        print(Min)
-        print(L)
-        print(r_x0)
-
         return r_x0, s_x0
 
     # def _hammer_function_precompute(self,x0, L, Min, model):

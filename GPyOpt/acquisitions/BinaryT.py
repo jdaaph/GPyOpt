@@ -42,10 +42,11 @@ class AcquisitionBinaryT(AcquisitionBase):
 
     def _compute_acq(self, x):
         """
-        Computes the Expected Improvement per unit of cost, always negative for this acq. What to find the max
+        Computes the Expected Improvement per unit of cost
         """
+        EPSILON = 0.1
         m, s = self.model.predict(x)
-        f_acqu = - np.abs(m / s)
+        f_acqu = + s / (np.abs(m)+EPSILON)
         return f_acqu
 
     # def _compute_acq_withGradients(self, x):
@@ -63,8 +64,9 @@ class AcquisitionBinaryT(AcquisitionBase):
         """
         Computes the Expected Improvement and its derivative (has a very easy derivative!)
         """
+        EPSILON = 0.1
         fmin = self.model.get_fmin()
         m, s, dmdx, dsdx = self.model.predict_withGradients(x)
-        f_acqu = - m / s
-        df_acqu = - dmdx / s + m * dsdx / s / s
+        f_acqu = + s / (np.abs(m)+EPSILON)
+        df_acqu = + (dsdx) / (np.abs(m) + EPSILON) - (dsdx) * np.sign(m) * dmdx / (np.abs(m) + EPSILON) / (np.abs(m) + EPSILON)
         return f_acqu, df_acqu

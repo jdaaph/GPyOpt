@@ -7,7 +7,7 @@ import time
 from ..util.general import best_value, reshape
 from ..core.task.cost import CostModel
 try:
-    from ..plotting.plots_bo import plot_acquisition, plot_convergence
+    from ..plotting.plots_bo import plot_acquisition, plot_convergence, plot_acquisition_binaryT
 except:
     pass
 
@@ -227,6 +227,22 @@ class BO(object):
                                 self.suggested_sample,
                                 filename)
 
+    def plot_acquisition_binaryT(self,filename=None):
+        """
+        Plots the model and the acquisition function.
+            if self.input_dim = 1: Plots data, mean and variance in one plot and the acquisition function in another plot
+            if self.input_dim = 2: as before but it separates the mean and variance of the model in two different plots
+        :param filename: name of the file where the plot is saved
+        """
+        print(self.model.model.X)
+        return plot_acquisition_binaryT(self.acquisition.space.get_bounds(),
+                                        self.model.model.X.shape[1],
+                                        self.model.model,
+                                        self.model.model.X,
+                                        self.model.model.Y,
+                                        self.acquisition.acquisition_function,
+                                        self.suggested_sample,
+                                        filename)
 
     def plot_convergence(self,filename=None):
         """

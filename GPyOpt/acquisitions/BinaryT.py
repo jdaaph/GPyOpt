@@ -68,5 +68,5 @@ class AcquisitionBinaryT(AcquisitionBase):
         fmin = self.model.get_fmin()
         m, s, dmdx, dsdx = self.model.predict_withGradients(x)
         f_acqu = + s / (np.abs(m)+EPSILON)
-        df_acqu = + (dsdx) / (np.abs(m) + EPSILON) - (dsdx) * np.sign(m) * dmdx / (np.abs(m) + EPSILON) / (np.abs(m) + EPSILON)
+        df_acqu = + (dsdx) / (np.abs(m) + EPSILON) - (s) * np.sign(m) * dmdx / (np.abs(m) + EPSILON) / (np.abs(m) + EPSILON)
         return f_acqu, df_acqu

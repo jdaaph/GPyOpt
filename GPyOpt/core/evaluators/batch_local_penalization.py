@@ -17,6 +17,7 @@ class LocalPenalization(EvaluatorBase):
     """
     def __init__(self, acquisition, batch_size, normalize_Y):
         super(LocalPenalization, self).__init__(acquisition, batch_size)
+        print(acquisition)
         self.acquisition = acquisition
         self.batch_size = batch_size
         self.normalize_Y = normalize_Y
@@ -36,7 +37,7 @@ class LocalPenalization(EvaluatorBase):
 
         if self.batch_size >1:
             # ---------- Approximate the constants of the the method
-            L = estimate_L(self.acquisition.model.model,self.acquisition.space.get_bounds())
+            L = estimate_L(self.acquisition.model.model,self.acquisition.space.get_bounds(),self.acquisition)
             Min = self.acquisition.model.model.Y.min()
 
         # --- GET the remaining elements
@@ -59,7 +60,11 @@ class LocalPenalization(EvaluatorBase):
 #     def df(x,model,x0):
 #         x = np.atleast_2d(x)
 #         dmdx,_ = model.predictive_gradients(x)
+#         print('====')
+#         # print(x.shape)
+#         print((dmdx*dmdx).shape)
 #         res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
+#         # print(res.shape)
 #         return -res
 #
 #     samples = samples_multidimensional_uniform(bounds,500)
@@ -72,18 +77,16 @@ class LocalPenalization(EvaluatorBase):
 #     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
 #     return L
 
-def estimate_L(model,bounds,storehistory=True):
-    """
+def estimate_L(model,bounds,acquisition,storehistory=True):
+    """ Altered by me
     Estimate the Lipschitz constant of f by taking maximizing the norm of the expectation of the gradient of *f*.
     """
     def df(x,model,x0):
         x = np.atleast_2d(x)
-        m, s = model.predict(x)
-        dmdx, dsdx = model.predictive_gradients(x)
-        res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
-        # res = np.linalg.norm(dmdx / s - m / s / s * dsdx, axis=1)
-        # print(res)
-        # print(dmdx.shape)
+        _, res = acquisition.acquisition_function_withGradients(x)
+        # print("shape in estimate L")
+        # print(res.shape)
+        res = np.sqrt((res*res).sum(1)).reshape((-1,1)) # simply take the norm of the expectation of the gradient
         return -res
 
     samples = samples_multidimensional_uniform(bounds,500)
@@ -94,4 +97,6 @@ def estimate_L(model,bounds,storehistory=True):
     minusL = res.fun[0][0]
     L = -minusL
     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
+    print('L')
+    print(L)
     return L

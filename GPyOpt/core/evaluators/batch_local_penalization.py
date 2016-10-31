@@ -97,6 +97,4 @@ def estimate_L(model,bounds,acquisition,storehistory=True):
     minusL = res.fun[0][0]
     L = -minusL
     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
-    print('L')
-    print(L)
     return L

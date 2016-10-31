@@ -53,40 +53,14 @@ class LocalPenalization(EvaluatorBase):
         return X_batch
 
 
-# def estimate_L(model,bounds,storehistory=True):
-#     """
-#     Estimate the Lipschitz constant of f by taking maximizing the norm of the expectation of the gradient of *f*.
-#     """
-#     def df(x,model,x0):
-#         x = np.atleast_2d(x)
-#         dmdx,_ = model.predictive_gradients(x)
-#         print('====')
-#         # print(x.shape)
-#         print((dmdx*dmdx).shape)
-#         res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
-#         # print(res.shape)
-#         return -res
-#
-#     samples = samples_multidimensional_uniform(bounds,500)
-#     samples = np.vstack([samples,model.X])
-#     pred_samples = df(samples,model,0)
-#     x0 = samples[np.argmin(pred_samples)]
-#     res = scipy.optimize.minimize(df,x0, method='L-BFGS-B',bounds=bounds, args = (model,x0), options = {'maxiter': 200})
-#     minusL = res.fun[0][0]
-#     L = -minusL
-#     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
-#     return L
-
-def estimate_L(model,bounds,acquisition,storehistory=True):
-    """ Altered by me
+def estimate_L(model,bounds,storehistory=True):
+    """
     Estimate the Lipschitz constant of f by taking maximizing the norm of the expectation of the gradient of *f*.
     """
     def df(x,model,x0):
         x = np.atleast_2d(x)
-        _, res = acquisition.acquisition_function_withGradients(x)
-        # print("shape in estimate L")
-        # print(res.shape)
-        res = np.sqrt((res*res).sum(1)).reshape((-1,1)) # simply take the norm of the expectation of the gradient
+        dmdx,_ = model.predictive_gradients(x)
+        res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
         return -res
 
     samples = samples_multidimensional_uniform(bounds,500)
@@ -98,3 +72,25 @@ def estimate_L(model,bounds,acquisition,storehistory=True):
     L = -minusL
     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
     return L
+#
+# def estimate_L(model,bounds,acquisition,storehistory=True):
+#     """ Altered by me
+#     Estimate the Lipschitz constant of f by taking maximizing the norm of the expectation of the gradient of *f*.
+#     """
+#     def df(x,model,x0):
+#         x = np.atleast_2d(x)
+#         _, res = acquisition.acquisition_function_withGradients(x)
+#         # print("shape in estimate L")
+#         # print(res.shape)
+#         res = np.sqrt((res*res).sum(1)).reshape((-1,1)) # simply take the norm of the expectation of the gradient
+#         return -res
+#
+#     samples = samples_multidimensional_uniform(bounds,500)
+#     samples = np.vstack([samples,model.X])
+#     pred_samples = df(samples,model,0)
+#     x0 = samples[np.argmin(pred_samples)]
+#     res = scipy.optimize.minimize(df,x0, method='L-BFGS-B',bounds=bounds, args = (model,x0), options = {'maxiter': 200})
+#     minusL = res.fun[0][0]
+#     L = -minusL
+#     if L<1e-7: L=10  ## to avoid problems in cases in which the model is flat.
+#     return L

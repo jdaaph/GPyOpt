@@ -57,14 +57,13 @@ class AcquisitionLP(AcquisitionBase):
         s = np.sqrt(pred)
 
         Min = 0
-        # r_x0 = (m-Min)/L
-        r_x0 = np.abs(self.acq.acquisition_function(x0))/L
+        r_x0 = np.abs(m-Min)/L
+        # r_x0 = np.abs(self.acq.acquisition_function(x0))/L
         s_x0 = s/L
         r_x0 = r_x0.flatten()
         s_x0 = s_x0.flatten()
-        # print(L)
-        # print(Min)
-        # print(r_x0)
+        print("r")
+        print(r_x0)
         return r_x0, s_x0
 
     # def _hammer_function_precompute(self,x0, L, Min, model):

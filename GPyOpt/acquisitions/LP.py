@@ -57,8 +57,9 @@ class AcquisitionLP(AcquisitionBase):
         s = np.sqrt(pred)
 
         Min = 0
-        r_x0 = np.abs(m-Min)/L
-        # r_x0 = np.abs(self.acq.acquisition_function(x0))/L
+        # r_x0 = np.abs(m-Min)/L
+        # r_x0 = (np.abs(s))/L
+        r_x0 = (1-np.abs(m))/L
         s_x0 = s/L
         r_x0 = r_x0.flatten()
         s_x0 = s_x0.flatten()

@@ -154,7 +154,7 @@ def plot_acquisition_binaryT(bounds,input_dim,model,Xdata,Ydata,acquisition_func
         # plt.title('Acquisition function')
         # grid(True)
         # plt.xlim(*bounds)
-
+        a = plt.figure()
         x_grid = np.arange(bounds[0][0], bounds[0][1], 0.001)
         x_grid = x_grid.reshape(len(x_grid),1)
         acqu = acquisition_function(x_grid)
@@ -178,9 +178,11 @@ def plot_acquisition_binaryT(bounds,input_dim,model,Xdata,Ydata,acquisition_func
 
 
         if filename!=None:
-            savefig(filename)
+            savefig(filename, dpi=300)
         else:
             plt.show()
+
+        return a
 
     if input_dim ==2:
         X1 = np.linspace(bounds[0][0], bounds[0][1], 200)
@@ -191,7 +193,7 @@ def plot_acquisition_binaryT(bounds,input_dim,model,Xdata,Ydata,acquisition_func
         acqu_normalized = (-acqu - min(-acqu))/(max(-acqu - min(-acqu)))
         acqu_normalized = acqu_normalized.reshape((200,200))
         m, v = model.predict(X)
-        plt.figure(figsize=(15,5))
+        a = plt.figure(figsize=(15,5))
         plt.subplot(1, 3, 1)
         plt.contourf(X1, X2, m.reshape(200,200),100)
         plt.plot(Xdata[:,0], Xdata[:,1], 'r.', markersize=10, label=u'Observations')
@@ -219,6 +221,8 @@ def plot_acquisition_binaryT(bounds,input_dim,model,Xdata,Ydata,acquisition_func
         plt.title('Acquisition function')
         plt.axis((bounds[0][0],bounds[0][1],bounds[1][0],bounds[1][1]))
         if filename!=None:savefig(filename)
+
+        return a
 
 def plot_convergence(Xdata,best_Y, filename = None):
     '''

@@ -44,7 +44,7 @@ class AcquisitionBinaryT(AcquisitionBase):
         """
         Computes the Expected Improvement per unit of cost
         """
-        EPSILON = 0.001
+        EPSILON = 0.01
         m, s = self.model.predict(x)
         f_acqu = + s / (np.abs(m)+EPSILON)
         return f_acqu
@@ -64,7 +64,7 @@ class AcquisitionBinaryT(AcquisitionBase):
         """
         Computes the Expected Improvement and its derivative (has a very easy derivative!)
         """
-        EPSILON = 0.001
+        EPSILON = 0.01
         fmin = self.model.get_fmin()
         m, s, dmdx, dsdx = self.model.predict_withGradients(x)
         f_acqu = + s / (np.abs(m)+EPSILON)

@@ -45,7 +45,7 @@ class AcquisitionLP(AcquisitionBase):
         if X_batch is not None:
             self.r_x0, self.s_x0 = self._hammer_function_precompute(X_batch, L, Min, self.model)
 
-    def _hammer_function_precompute(self,x0, L, Min, model):
+    def _hammer_function_precompute(self, x0, L, Min, model):
         """
         Pre-computes the parameters of a penalizer centered at x0.
         """

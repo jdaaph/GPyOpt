@@ -17,7 +17,6 @@ class LocalPenalization(EvaluatorBase):
     """
     def __init__(self, acquisition, batch_size, normalize_Y):
         super(LocalPenalization, self).__init__(acquisition, batch_size)
-        print(acquisition)
         self.acquisition = acquisition
         self.batch_size = batch_size
         self.normalize_Y = normalize_Y
@@ -59,8 +58,11 @@ def estimate_L(model,bounds,storehistory=True):
     """
     def df(x,model,x0):
         x = np.atleast_2d(x)
-        dmdx,_ = model.predictive_gradients(x)
-        res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
+        dmdx, dvdx= model.predictive_gradients(x)
+        # res = np.sqrt((dmdx*dmdx).sum(1)) # simply take the norm of the expectation of the gradient
+        dmdx = np.squeeze(dmdx, axis=2)
+        res = np.sqrt(np.sqrt((dmdx*dmdx *dvdx*dvdx).sum(1))) # simply take the norm of the expectation of the gradient
+        res = res.reshape((-1, 1))
         return -res
 
     samples = samples_multidimensional_uniform(bounds,500)
